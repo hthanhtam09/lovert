@@ -72,10 +72,24 @@ export function privacyWatch(page: Page, secrets: string[] = []) {
 
 /** Click a download link through the UI and read the bytes the browser saved. */
 export async function downloadVia(page: Page, link: Locator) {
+  const attr = ((await link.getAttribute('download')) ?? '').normalize('NFC');
   const [d] = await Promise.all([page.waitForEvent('download'), link.click()]);
   const path = await d.path();
   if (!path) throw new Error('download was not saved');
-  return { name: d.suggestedFilename().normalize('NFC'), bytes: readFileSync(path) };
+  return { name: d.suggestedFilename().normalize('NFC'), attr, bytes: readFileSync(path) };
+}
+
+/**
+ * Download name check. The app's contract is the exact `download` attribute. The name the browser saves may differ by
+ * one known platform rewrite only: WebKit on Linux replaces spaces with "_" (seen in CI run 45764998929, accents kept).
+ * Any other difference fails. The rewrite is recorded as an annotation so reports show it.
+ */
+export function expectDownloadName(out: { name: string; attr?: string }, expected: string, info?: TestInfo) {
+  const want = expected.normalize('NFC');
+  if (out.attr !== undefined) expect(out.attr, 'download attribute set by the app').toBe(want);
+  if (out.name === want) return;
+  expect(out.name, 'saved name: exact, or spaces replaced by "_" by the browser').toBe(want.replace(/ /g, '_'));
+  info?.annotations.push({ type: 'browser-filename-rewrite', description: `"${want}" saved as "${out.name}"` });
 }
 
 /** Bytes behind a blob: URL in the page (the preview source or the download href). */

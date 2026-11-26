@@ -6,7 +6,7 @@
 import { expect, test } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
 import { DRIVERS } from '../e2e/drivers';
-import { downloadVia, pane } from '../e2e/gate-helpers';
+import { downloadVia, expectDownloadName, pane } from '../e2e/gate-helpers';
 
 const KIND = process.env.SMOKE_KIND ?? 'preview';
 const ORIGIN = process.env.EXPECT_ORIGIN;
@@ -24,7 +24,7 @@ for (const d of DRIVERS) {
     await d.done(page);
     await pane(page, /Settings|Result/);
     const out = await downloadVia(page, page.getByTestId('download'));
-    expect(out.name).toBe(d.outName.normalize('NFC'));
+    expectDownloadName(out, d.outName, info);
     expect(await d.identify(page, out), 'downloaded file is the converted input').toBe('A');
     if (d.outMime === 'application/pdf') expect((await PDFDocument.load(out.bytes)).getPageCount()).toBe(1);
     if (d.outMime === 'application/json') expect(Array.isArray(JSON.parse(out.bytes.toString('utf8')))).toBe(true);

@@ -6,7 +6,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { formatBytes } from '../../packages/core/src/index.ts';
 import { getTool, TOOLS } from '../../apps/web/src/content/tools.ts';
 import { DRIVERS, type Driver, type Output } from './drivers';
-import { alerts, blobBytes, downloadVia, instrument, marks, onJobSent, pane, privacyWatch, swapFiles } from './gate-helpers';
+import { alerts, blobBytes, downloadVia, expectDownloadName, instrument, marks, onJobSent, pane, privacyWatch, swapFiles } from './gate-helpers';
 
 test.beforeEach(async ({ page }) => instrument(page));
 
@@ -48,7 +48,7 @@ for (const d of DRIVERS) {
       await runToResult(page, d);
       const out = await download(page);
       // Flow: the saved file is the converted A, with the expected name.
-      expect(out.name).toBe(d.outName.normalize('NFC'));
+      expectDownloadName(out, d.outName, info);
       expect(await d.identify(page, out)).toBe('A');
       // Consistency: preview bytes, MIME of the shared Blob, the byte count shown.
       const href = (await page.getByTestId('download').getAttribute('href'))!;
@@ -101,7 +101,7 @@ for (const d of DRIVERS) {
       await pick(page, d, d.misnamed.file);
       await runToResult(page, d);
       const out = await download(page);
-      expect(out.name).toBe(d.misnamed.outName);
+      expectDownloadName(out, d.misnamed.outName, info);
     });
 
     test(`${t('stale-file')} switching A→B while A runs: A's late result never shows`, async ({ page }, info) => {

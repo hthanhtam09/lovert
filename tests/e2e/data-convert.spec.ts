@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 import { showPane, watchNetwork } from './helpers';
-import { diagnostics } from './gate-helpers';
+import { diagnostics, downloadVia, expectDownloadName } from './gate-helpers';
 
 const file = (name: string, text: string | Buffer, mimeType = 'text/csv') => ({ name, mimeType, buffer: typeof text === 'string' ? Buffer.from(text, 'utf8') : text });
 
@@ -21,10 +21,10 @@ test.describe('/csv-to-json', () => {
       await expect(page.getByRole('status')).toContainText('2 rows converted and checked', { timeout: 30_000 });
       diag.note('status ok');
       await expect(page.getByText('Output is valid JSON (parsed back from the file bytes)')).toBeVisible();
-      const download = await Promise.all([page.waitForEvent('download'), page.getByTestId('download').click()]).then(([d]) => d);
+      const out = await downloadVia(page, page.getByTestId('download'));
       diag.note('downloaded');
-      expect(download.suggestedFilename().normalize('NFC')).toBe('khách hàng.json'.normalize('NFC'));
-      const text = readFileSync((await download.path())!, 'utf8');
+      expectDownloadName(out, 'khách hàng.json', info);
+      const text = out.bytes.toString('utf8');
       expect(JSON.parse(text)).toEqual([
         { 'mã': '007', 'họ tên': 'Nguyễn, Văn A', 'ghi chú': 'dòng 1\ndòng "2"' },
         { 'mã': '010', 'họ tên': 'Trần Thị Bích', 'ghi chú': 'Huế' },

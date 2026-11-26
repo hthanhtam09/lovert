@@ -3,7 +3,7 @@ import nextVitals from 'eslint-config-next/core-web-vitals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/node_modules/**', '**/.next/**', '**/out/**', '**/out-prodcheck/**', 'apps/web/public/vendor/**', 'apps/web/next-env.d.ts', 'test-results/**', 'playwright-report/**', 'reports/**', 'test-results-*/**'] },
+  { ignores: ['**/node_modules/**', '**/.next/**', '**/out/**', '**/out-prodcheck/**', 'apps/web/public/vendor/**', 'apps/web/next-env.d.ts', 'test-results/**', 'playwright-report/**', 'reports/**', 'test-results-*/**', 'qa-results/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...nextVitals.map((c) => ({ ...c, files: ['apps/web/**/*.{ts,tsx}'] })),
