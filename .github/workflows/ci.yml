@@ -137,3 +137,68 @@ jobs:
           url=$(grep -Eo 'https://[a-z0-9.-]+\.pages\.dev' deploy.log | head -1)
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "Preview: $url (sha ${{ github.sha }}, artifact site-${{ github.sha }})" >> "$GITHUB_STEP_SUMMARY"
+
+  # Production: manual run on main only, after check + release passed for this SHA in this run.
+  # Same source as the gated artifact; only the deploy environment differs (DEPLOY_ENV/SITE_URL → canonical, sitemap, index).
+  # Uses the GitHub environment "production" (add required reviewers there to require an approval per deploy).
+  production:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Production build + SEO/link check
+        env:
+          DEPLOY_ENV: production
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          test -n "$SITE_URL" || { echo "SITE_URL variable is not set"; exit 1; }
+          pnpm build
+          node scripts/check-build.mjs
+      - name: Confirm the Pages production branch is main
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT: ${{ vars.CF_PAGES_PROJECT }}
+        run: |
+          prod=$(curl -fsS -H "Authorization: Bearer $CF_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT/pages/projects/$PROJECT" | jq -r '.result.production_branch')
+          echo "Pages production branch: $prod"
+          test "$prod" = "main" || { echo "Refusing: production branch is '$prod', expected main"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-production-${{ github.sha }}
+          path: apps/web/out
+          retention-days: 90
+      - name: Deploy to production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@3.114.0 pages deploy apps/web/out --project-name="${{ vars.CF_PAGES_PROJECT }}" \
+            --branch=main --commit-hash="${{ github.sha }}" --commit-dirty=false | tee deploy.log
+          echo "Production: ${{ vars.SITE_URL }} (sha ${{ github.sha }})" >> "$GITHUB_STEP_SUMMARY"
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - name: Smoke test on the production URL
+        env:
+          SMOKE_URL: ${{ vars.SITE_URL }}
+          SMOKE_KIND: production
+          EXPECT_ORIGIN: ${{ vars.SITE_URL }}
+        run: pnpm smoke --output=test-results/smoke-production
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-reports-${{ github.sha }}-attempt${{ github.run_attempt }}
+          path: |
+            reports
+            test-results
+          if-no-files-found: warn
