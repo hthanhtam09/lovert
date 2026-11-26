@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-21T00:44:50.421Z",
+  "results": [
+    {
+      "browser": "webkit",
+      "tool": "compress-image",
+      "input": "1200×800 PNG, small text + fake signature",
+      "target": "JPEG ≤ 150 KB",
+      "sample": "docs/benchmarks/samples/text-webkit-jpeg-150kb.jpg",
+      "ms": 121,
+      "status": "ok",
+      "caption": "After · JPEG · 1200×800px · 112.6 KB · quality 95",
+      "inputBytes": 96109,
+      "frameAfterMs": 22
+    },
+    {
+      "browser": "webkit",
+      "tool": "compress-image",
+      "input": "1200×800 PNG, small text + fake signature",
+      "target": "JPEG ≤ 60 KB",
+      "sample": "docs/benchmarks/samples/text-webkit-jpeg-60kb.jpg",
+      "ms": 240,
+      "status": "ok",
+      "caption": "After · JPEG · 1200×800px · 59.9 KB · quality 48",
+      "inputBytes": 96109,
+      "frameAfterMs": 0
+    }
+  ]
+}

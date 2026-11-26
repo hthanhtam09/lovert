@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-21T00:45:21.843Z",
+  "results": [
+    {
+      "browser": "chromium",
+      "tool": "compress-image",
+      "input": "1200×800 PNG, small text + fake signature",
+      "target": "JPEG ≤ 150 KB",
+      "sample": "docs/benchmarks/samples/text-chromium-jpeg-150kb.jpg",
+      "ms": 112,
+      "status": "ok",
+      "caption": "After · JPEG · 1200×800px · 94.0 KB · quality 95",
+      "inputBytes": 106864,
+      "frameAfterMs": 3
+    },
+    {
+      "browser": "chromium",
+      "tool": "compress-image",
+      "input": "1200×800 PNG, small text + fake signature",
+      "target": "JPEG ≤ 60 KB",
+      "sample": "docs/benchmarks/samples/text-chromium-jpeg-60kb.jpg",
+      "ms": 104,
+      "status": "ok",
+      "caption": "After · JPEG · 1200×800px · 59.7 KB · quality 80",
+      "inputBytes": 106864,
+      "frameAfterMs": 0
+    },
+    {
+      "browser": "chromium",
+      "tool": "compress-image",
+      "input": "1200×800 PNG, small text + fake signature",
+      "target": "WebP ≤ 60 KB",
+      "sample": "docs/benchmarks/samples/text-chromium-webp-60kb.webp",
+      "ms": 124,
+      "status": "ok",
+      "caption": "After · WebP · 1200×800px · 57.3 KB · quality 95",
+      "inputBytes": 106864,
+      "frameAfterMs": 7
+    }
+  ]
+}

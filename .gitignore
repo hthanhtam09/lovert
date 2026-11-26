@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+apps/web/public/vendor
+test-results
+playwright-report
+.env*
+!.env.example
+*.tsbuildinfo
+.DS_Store
+apps/web/out-prodcheck
+qa-results
+reports
+test-results-*

@@ -1,0 +1,42 @@
+{
+  "name": "lovert",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.9",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @lovert/web dev",
+    "build": "pnpm --filter @lovert/web build",
+    "build:prod-check": "node scripts/prod-check.mjs",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "test:report": "vitest run --reporter=default --reporter=json --outputFile.json=reports/unit.json",
+    "test:e2e": "playwright test",
+    "test:e2e:release": "RELEASE=1 playwright test",
+    "gate": "node scripts/tool-gate.mjs --stage merge",
+    "gate:release": "node scripts/tool-gate.mjs --stage release",
+    "gate:registry": "node scripts/tool-gate.mjs --registry-only",
+    "serve:out": "node scripts/serve-static.mjs apps/web/out 4173",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && node scripts/check-build.mjs",
+    "build:deploy": "pnpm build && node scripts/check-build.mjs",
+    "bench": "BENCH=1 playwright test --grep @bench",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "smoke": "playwright test -c playwright.smoke.config.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "@playwright/test": "1.65.1",
+    "@types/node": "24.19.2",
+    "chrome-launcher": "1.2.1",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.6",
+    "lighthouse": "12.8.2",
+    "pdf-lib": "1.17.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.73.0",
+    "vitest": "4.1.12"
+  }
+}

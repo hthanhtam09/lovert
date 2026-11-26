@@ -1,0 +1,129 @@
+{
+  "date": "2026-11-21T04:16:23.671Z",
+  "browser": "Chromium (Playwright 1.65.1)",
+  "guide1_photo": {
+    "inputBytes": 2430420,
+    "status": "Result",
+    "after": "After · JPEG · 4032×3024px · 494.4 KB · quality 56",
+    "outputBytes": 494381,
+    "checks": [
+      "✓ Passed: Format is JPEG (checked from file bytes)",
+      "✓ Passed: 494,381 bytes ≤ limit 500,000 bytes (494.4 KB)",
+      "✓ Passed: Dimensions are exactly 4032×3024px"
+    ]
+  },
+  "guide1_big_noresize": {
+    "inputBytes": 9126445,
+    "status": "Result (over the limit)",
+    "after": "After · JPEG · 8000×6000px · 539.6 KB · quality 30",
+    "outputBytes": 539600,
+    "checks": [
+      "✓ Passed: Format is JPEG (checked from file bytes)",
+      "✗ Failed: 539,600 bytes > limit 500,000 bytes (539.6 KB)",
+      "✓ Passed: Dimensions are exactly 8000×6000px"
+    ]
+  },
+  "guide1_big_resize": {
+    "inputBytes": 9126445,
+    "status": "Result",
+    "after": "After · JPEG · 7200×5400px · 499.9 KB · quality 36",
+    "outputBytes": 499885,
+    "checks": [
+      "✓ Passed: Format is JPEG (checked from file bytes)",
+      "✓ Passed: 499,885 bytes ≤ limit 500,000 bytes (499.9 KB)",
+      "✓ Passed: Dimensions are exactly 7200×5400px"
+    ]
+  },
+  "guide2_fullres": {
+    "inputBytes": [
+      2376876,
+      2391891,
+      2374102
+    ],
+    "order": [
+      "Page 1 page-3-receipt.jpg · 2.38 MB",
+      "Page 2 page-1-cover.jpg · 2.38 MB",
+      "Page 3 page-2-details.jpg · 2.40 MB"
+    ],
+    "heading": "Your PDF",
+    "meta": "3 pages · 936.9 KB · JPEG quality 43",
+    "outputBytes": 936811,
+    "checks": [
+      "✓ Passed: Format is PDF (checked from file bytes)",
+      "✓ Passed: 936,811 bytes ≤ limit 1,000,000 bytes (936.9 KB)",
+      "✓ Passed: 3 page(s), one per image"
+    ]
+  },
+  "guide2_tight_fullres": {
+    "inputBytes": [
+      2376876,
+      2391891,
+      2374102
+    ],
+    "order": [
+      "Page 1 page-3-receipt.jpg · 2.38 MB",
+      "Page 2 page-1-cover.jpg · 2.38 MB",
+      "Page 3 page-2-details.jpg · 2.40 MB"
+    ],
+    "heading": "Your PDF (over the limit)",
+    "meta": "3 pages · 572.4 KB · JPEG quality 30",
+    "outputBytes": 572313,
+    "checks": [
+      "✓ Passed: Format is PDF (checked from file bytes)",
+      "✗ Failed: 572,313 bytes > limit 500,000 bytes (572.4 KB)",
+      "✓ Passed: 3 page(s), one per image"
+    ]
+  },
+  "guide2_tight_lowerres": {
+    "inputBytes": [
+      2376876,
+      2391891,
+      2374102
+    ],
+    "order": [
+      "Page 1 page-3-receipt.jpg · 2.38 MB",
+      "Page 2 page-1-cover.jpg · 2.38 MB",
+      "Page 3 page-2-details.jpg · 2.40 MB"
+    ],
+    "heading": "Your PDF",
+    "meta": "3 pages · 494.0 KB · JPEG quality 33 · images at 89% resolution",
+    "outputBytes": 493975,
+    "checks": [
+      "✓ Passed: Format is PDF (checked from file bytes)",
+      "✓ Passed: 493,975 bytes ≤ limit 500,000 bytes (494.0 KB)",
+      "✓ Passed: 3 page(s), one per image"
+    ]
+  },
+  "guide3_original_50kb": {
+    "inputBytes": 180923,
+    "status": "Result",
+    "after": "After · JPEG · 1200×600px · 49.6 KB · quality 57",
+    "outputBytes": 49540,
+    "checks": [
+      "✓ Passed: Format is JPEG (checked from file bytes)",
+      "✓ Passed: 49,540 bytes ≤ limit 50,000 bytes (49.6 KB)",
+      "✓ Passed: Dimensions are exactly 1200×600px"
+    ]
+  },
+  "guide3_exact_nolimit": {
+    "inputBytes": 180923,
+    "status": "Result",
+    "after": "After · JPEG · 400×200px · 15.8 KB · quality 85",
+    "outputBytes": 15747,
+    "checks": [
+      "✓ Passed: Format is JPEG (checked from file bytes)",
+      "✓ Passed: Dimensions are exactly 400×200px"
+    ]
+  },
+  "guide3_exact_50kb": {
+    "inputBytes": 180923,
+    "status": "Result",
+    "after": "After · JPEG · 400×200px · 30.4 KB · quality 95",
+    "outputBytes": 30356,
+    "checks": [
+      "✓ Passed: Format is JPEG (checked from file bytes)",
+      "✓ Passed: 30,356 bytes ≤ limit 50,000 bytes (30.4 KB)",
+      "✓ Passed: Dimensions are exactly 400×200px"
+    ]
+  }
+}

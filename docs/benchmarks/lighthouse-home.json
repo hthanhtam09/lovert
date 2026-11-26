@@ -1,0 +1,16 @@
+{
+  "page": "/",
+  "date": "2026-11-20T22:43:55.743Z",
+  "lighthouse": "12.8.2",
+  "formFactor": "mobile",
+  "throttling": "simulate",
+  "scores": {
+    "performance": 79,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 63
+  },
+  "LCP": "4.2 s",
+  "CLS": "0",
+  "TBT": "130 ms"
+}
