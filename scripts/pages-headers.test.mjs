@@ -5,8 +5,8 @@ import { headersFor, parseHeaders } from './pages-headers.mjs';
 const rules = parseHeaders(readFileSync('apps/web/public/_headers', 'utf8'));
 
 describe('_headers (local emulation of Cloudflare Pages matching)', () => {
-  it('noindex on <project>.pages.dev', () => {
-    expect(headersFor(rules, 'lovert.pages.dev', '/compress-image')['X-Robots-Tag']).toBe('noindex');
+  it('production origin <project>.pages.dev stays indexable (no X-Robots-Tag)', () => {
+    expect(headersFor(rules, 'lovert.pages.dev', '/compress-image')['X-Robots-Tag']).toBeUndefined();
   });
   it('noindex on <preview>.<project>.pages.dev (hash and branch aliases)', () => {
     expect(headersFor(rules, 'a1b2c3d4.lovert.pages.dev', '/')['X-Robots-Tag']).toBe('noindex');

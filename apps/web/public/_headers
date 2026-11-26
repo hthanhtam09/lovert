@@ -5,9 +5,8 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; worker-src 'self' blob:; connect-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none'
 
-# Preview deployments on *.pages.dev must never be indexed.
-https://:project.pages.dev/*
-  X-Robots-Tag: noindex
+# Preview deployments (<hash>.lovert.pages.dev, <branch>.lovert.pages.dev) must never be indexed.
+# The production origin itself (lovert.pages.dev) is indexable: robots and canonicals come from the production build.
 https://:version.:project.pages.dev/*
   X-Robots-Tag: noindex
 
