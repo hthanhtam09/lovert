@@ -1,13 +1,20 @@
 name: CI
 on:
   pull_request:
+  # Every push builds and tests. Pushes to branches other than main also run the release gate and,
+  # when both gates pass, deploy that exact artifact as a Cloudflare Pages Preview. main is never deployed here.
   push:
-    branches: [main]
+    branches: ['**']
     tags: ['v*']
   workflow_dispatch:
 
 # Every report, trace and gate verdict is tied to one commit and one run attempt:
 # artifact names carry the SHA and run attempt; tool-gate-*.json records sha/run (scripts/tool-gate.mjs).
+
+# One run per branch at a time; a newer push cancels the older run (its artifacts stay attached to that run).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # Required to merge (make "check" a required status check on main in the branch protection settings).
@@ -46,7 +53,7 @@ jobs:
   # Required before a release (tags, manual run). The site artifact uploaded here is the one that passed the release gate;
   # a deploy job must download it from this run (same SHA) instead of rebuilding.
   release:
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != 'refs/heads/main')
     needs: check
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -97,7 +104,7 @@ jobs:
   # Never production: refuses to run when this branch is the Pages project's production branch.
   # Needs repository variable CF_PAGES_PROJECT and secrets CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
   preview:
-    if: github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && startsWith(github.ref, 'refs/heads/') && github.ref != 'refs/heads/main'
     needs: release
     runs-on: ubuntu-latest
     timeout-minutes: 15
