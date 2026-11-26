@@ -208,6 +208,9 @@ for (const d of DRIVERS) {
       if (d.action) {
         await pane(page, /Settings|Result/);
         const btn = page.getByRole('button', { name: d.action, exact: true });
+        // The action enables only after the pick is checked (header + structure); Enter on a disabled button does nothing.
+        // CI run 45768125988 (webkit): Enter was pressed 37 ms after the pick, before the check finished.
+        await expect(btn).toBeEnabled();
         await btn.focus();
         await page.keyboard.press('Enter');
       }
