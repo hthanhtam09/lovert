@@ -34,7 +34,8 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: [
     [process.env.CI ? 'github' : 'list'],
-    ['json', { outputFile: RELEASE ? 'reports/e2e-release.json' : 'reports/e2e.json' }],
+    // E2E_REPORT lets CI shards write one report per project (merged by the tool gate).
+    ['json', { outputFile: process.env.E2E_REPORT ?? (RELEASE ? 'reports/e2e-release.json' : 'reports/e2e.json') }],
     ['html', { outputFolder: 'reports/e2e-html', open: 'never' }],
   ],
   use: { baseURL: 'http://localhost:4173', trace: 'retain-on-failure', screenshot: 'only-on-failure' },
